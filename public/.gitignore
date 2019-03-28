@@ -1,0 +1,5 @@
+files/*
+fonts/*
+.htaccess
+storage/
+mix-manifest.json
