@@ -11,7 +11,7 @@
 <body>
 <div class="container">
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-6">
             New product:
             <div class="form">
                 <label for="#name">Name: </label>
@@ -21,6 +21,20 @@
                 <label for="#price">Price per item: </label>
                 <input id="price" type="number" step="0.01" title="Price per item" name="price"><br />
                 <button id="newProduct" class="btn btn-success">Save</button>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div id="editProduct" class="form d-none">
+                Edit product:
+                <input type="hidden" id="editid">
+                <label for="#editname">Name: </label>
+                <input id="editname" type="text" title="Product name" name="editname"><br />
+                <label for="#editqty">Quantity: </label>
+                <input id="editqty" type="number" step="1" title="Quantity in stock" name="editqty"><br />
+                <label for="#editprice">Price per item: </label>
+                <input id="editprice" type="number" step="0.01" title="Price per item" name="editprice"><br />
+                <button id="edit" class="btn btn-success">Save</button>
             </div>
         </div>
     </div>
@@ -52,6 +66,8 @@
         update();
     });
 
+    var products = [];
+
     $('#newProduct').click(function () {
         $.post({
             url: 'api/newProduct',
@@ -66,8 +82,29 @@
         })
     });
 
-    function edit(id) {
+    $('#edit').click(function () {
+        $.post({
+            url: 'api/editProduct/' + $('#editid').val(),
+            data: {
+                name: $('input[name=editname]').val(),
+                qty: $('input[name=editqty]').val(),
+                price: $('input[name=editprice]').val(),
+            },
+            success: function () {
+                $('#editProduct').addClass('d-none');
+                update();
+            }
+        })
+    });
 
+    function edit(id)
+    {
+        $('#editid').val(id);
+        $('#editname').val(products[id].name);
+        $('#editqty').val(products[id].qty);
+        $('#editprice').val(products[id].price);
+
+        $('#editProduct').removeClass('d-none');
     }
 
     function update()
@@ -79,11 +116,11 @@
             success: function (response) {
                var product;
                var sum = 0;
+               products = response;
 
                for (id in response) {
                    if (response.hasOwnProperty(id)) {
                        product = response[id];
-                       console.log(id, product);
 
                        sum += product.qty * product.price;
 
@@ -94,7 +131,7 @@
                            .append('<td>' + product.price + '</td>')
                            .append('<td>' + product.time + '</td>')
                            .append('<td>' + product.qty * product.price + '</td>')
-                           .append('<td><a class="btn btn-primary" href="/api/editProduct/" " ' + product.qty * product.price + '</td>')
+                           .append('<td><a href="#" class="btn btn-primary" onclick="edit(\'' + id + '\')">Edit</a></td>')
                            .append('</tr>')
                        ;
                    }

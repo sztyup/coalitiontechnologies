@@ -82,7 +82,7 @@ class IndexController extends Controller
             $json = [];
             $fs->put('products.json', json_encode($json));
         } else {
-            $json = json_decode($fs->get('products.json'));
+            $json = json_decode($fs->get('products.json'), true);
         }
 
         if (Arr::has($json, $product)) {
