@@ -13,5 +13,12 @@ class RouteServiceProvider extends ServiceProvider
             'middleware' => 'web',
             'namespace' => 'App\Http\Controllers',
         ], $this->app->basePath() . '/routes/web.php');
+
+        $router->group([
+            'middleware' => 'api',
+            'namespace' => 'App\Http\Controllers\Api',
+            'as' => 'api.',
+            'prefix' => 'api'
+        ], $this->app->basePath() . '/routes/api.php');
     }
 }
