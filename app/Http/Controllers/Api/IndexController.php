@@ -63,6 +63,10 @@ class IndexController extends Controller
             $json = json_decode($fs->get('products.json'), true);
         }
 
+        $json = Arr::sort($json, function (array $data) {
+            return $data['time'];
+        });
+
         return JsonResponse::create($json);
     }
 
